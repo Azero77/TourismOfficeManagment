@@ -9,14 +9,15 @@ using TourismOfficeApplication.Commands;
 using TourismOfficeApplication.Models;
 using TourismOfficeApplication.Models.DataAccess;
 using TourismOfficeApplication.Services;
-using TourismOfficeApplication.Store;
+using TourismOfficeApplication.Stores;
+
 
 namespace TourismOfficeApplication.ViewModels
 {
     public class ClientListViewModel : ViewModelBase
     {
         public ICommand SearchCommand { get; set; }
-        public ICommand ShowDetails { get; set; }
+        public ICommand ShowDetailsCommand { get; set; }
         public ICommand EditClientCommand { get; set; }
         public ObservableCollection<Client> Clients { 
             get => clients;
@@ -29,10 +30,14 @@ namespace TourismOfficeApplication.ViewModels
 
         private ObservableCollection<Client> clients;
 
-        public ClientListViewModel(DataAccess dataAccess)
+        public ClientListViewModel(DataAccess dataAccess, NavigationStore navigationStore)
         {
             dataAccess.GetClients().ContinueWith((t) => Clients = 
             new ObservableCollection<Client>(t.Result));
+
+            EditClientCommand = new NavigationCommand<ClientViewModel>(
+                new NavigationService<ClientViewModel>(navigationStore,(client) => new((Client) client)));
         }
+
     }
 }

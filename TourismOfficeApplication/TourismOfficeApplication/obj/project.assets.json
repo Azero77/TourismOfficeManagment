@@ -1040,11 +1040,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\WPF\\TourismOfficeApplication\\TourismOfficeApplication\\TourismOfficeApplication.csproj",
+      "projectUniqueName": "E:\\TourismOfficeManagment\\TourismOfficeApplication\\TourismOfficeApplication\\TourismOfficeApplication.csproj",
       "projectName": "TourismOfficeApplication",
-      "projectPath": "E:\\WPF\\TourismOfficeApplication\\TourismOfficeApplication\\TourismOfficeApplication.csproj",
+      "projectPath": "E:\\TourismOfficeManagment\\TourismOfficeApplication\\TourismOfficeApplication\\TourismOfficeApplication.csproj",
       "packagesPath": "C:\\Users\\mazag\\.nuget\\packages\\",
-      "outputPath": "E:\\WPF\\TourismOfficeApplication\\TourismOfficeApplication\\obj\\",
+      "outputPath": "E:\\TourismOfficeManagment\\TourismOfficeApplication\\TourismOfficeApplication\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\mazag\\AppData\\Roaming\\NuGet\\NuGet.Config",

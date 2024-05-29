@@ -14,7 +14,7 @@
             <views:ClientListView></views:ClientListView>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vms:ClientViewModel}">
-            
+            <views:ClientView/>
         </DataTemplate>
     </Window.Resources>
     <ContentControl

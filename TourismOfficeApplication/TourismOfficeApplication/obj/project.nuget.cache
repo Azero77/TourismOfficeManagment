@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7KOpDA8CLUMNHOANbs9Lgk7eLIhsFAZ0kziOfGUiqbiEaCYQwVaPFAaoiB80DDek8X5Sl95qXtoUgSAZd2crzQ==",
+  "dgSpecHash": "tljl+IwyYR7krPlCpjwMzVwZxCj7MGKX5o3xgHXLL7Z+tYasyuxLi7Ctn7/gxYwOmvd+1N9uuZl8EeM869vJSw==",
   "success": true,
-  "projectFilePath": "E:\\WPF\\TourismOfficeApplication\\TourismOfficeApplication\\TourismOfficeApplication.csproj",
+  "projectFilePath": "E:\\TourismOfficeManagment\\TourismOfficeApplication\\TourismOfficeApplication\\TourismOfficeApplication.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mazag\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\mazag\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
