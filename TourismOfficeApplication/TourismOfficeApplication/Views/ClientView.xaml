@@ -4,8 +4,134 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TourismOfficeApplication.Views"
+             xmlns:converters ="clr-namespace:TourismOfficeApplication.Converters"
              mc:Ignorable="d" 
+             Background="White"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+
+        <Grid.Resources>
+            
+            <ControlTemplate
+                x:Key="ValidatorTextBox" 
+                >
+                <ContentControl
+                    >
+                    <DockPanel LastChildFill="True">
+                        <TextBlock 
+                            Grid.Column="3"
+                            DockPanel.Dock="Right"
+                            Foreground="Red"
+                            FontSize="12"
+                            Text="{Binding ErrorContent}"></TextBlock>
+                        <Border
+                            BorderThickness="2"
+                            BorderBrush="Red">
+                            <AdornedElementPlaceholder>
+
+                            </AdornedElementPlaceholder>
+                        </Border>
+                    </DockPanel>
+                </ContentControl>
+            </ControlTemplate>
+              <!--Converting From char gender to string gender-->
+            <converters:GenderPropertyConverter x:Key="GenderConverter"/>
+            <Style TargetType="TextBox">
+                <Setter Property="Validation.ErrorTemplate"
+                        Value="{StaticResource ValidatorTextBox}"/>
+            </Style>
+        </Grid.Resources>
+        <!--Grid For inserting new values to properties-->
+        <Grid Name="PropertiesContainer">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Content="ID:"
+                   Grid.Row="0"
+                   Grid.Column="0"></Label>
+            <TextBox
+                IsEnabled="False"
+                Text="{Binding ID}"
+                Grid.Row="0"
+                Grid.Column="1"/>
+            
+            <!--FirstName-->
+            <Label
+               
+                Content="FirstName"
+                Grid.Row="1"
+                Grid.Column="0"/>
+            <TextBox
+                
+                Text="{Binding FirstName}"
+                Grid.Row="1"
+                Grid.Column="1"
+                />
+            
+
+            <!--LastName-->
+            <Label
+                Content="LastName"
+                Grid.Row="2"
+                Grid.Column="0"/>
+            <TextBox
+                Grid.Row="2"
+                Grid.Column="1"
+                Text="{Binding LastName}"/>
+            
+            <!--Gender-->
+            <Label
+                Content="Gender"
+                Grid.Row="3"
+                Grid.Column="0"
+                />
+            <!--<TextBox
+                Grid.Row="3"
+                Grid.Column="1"
+                Text="{Binding Gender}"/>-->
+            <ComboBox
+                Grid.Row="3"
+                Grid.Column="1"
+                SelectedValue="{Binding Gender,Converter={StaticResource GenderConverter}}"
+                SelectedValuePath="Content">
+                <ComboBoxItem Content="Gender" IsEnabled="False"/>
+                <ComboBoxItem Content="Male"/>
+                <ComboBoxItem Content="Female"/>
+            </ComboBox>
+            <!--Identity Path-->
+
+            <Label
+                Content="Identity Path"
+                Grid.Column="0"
+                Grid.Row="4"/>
+            <TextBox
+                Grid.Row="4"
+                Grid.Column="1"
+                Text="{Binding IdentityPath}"/>
+            
+            <!--National Number-->
+            <Label
+                Grid.Row="5"
+                Grid.Column="0"
+                Content="NationalNumber"/>
+            <TextBox
+                Grid.Row="5"
+                Grid.Column="1"
+                Text="{Binding NationalNumber}"/>
+        </Grid>
+
+
     </Grid>
 </UserControl>

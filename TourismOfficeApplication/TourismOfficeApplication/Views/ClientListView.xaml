@@ -40,7 +40,8 @@
                         <DataTemplate>
                             <Button Command="{Binding DataContext.EditClientCommand ,
                                     RelativeSource = {RelativeSource AncestorType=UserControl}}"
-                                    CommandParameter="{Binding}"></Button>
+                                    CommandParameter="{Binding}"
+                                    Content="Edit"></Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
