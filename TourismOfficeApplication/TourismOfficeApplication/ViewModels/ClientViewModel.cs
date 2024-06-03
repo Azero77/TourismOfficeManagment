@@ -5,14 +5,22 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using System.Windows.Input;
+using TourismOfficeApplication.Commands;
 using TourismOfficeApplication.Models;
+using TourismOfficeApplication.Models.DataAccess;
+using TourismOfficeApplication.Services;
 
 namespace TourismOfficeApplication.ViewModels
 {
     public class ClientViewModel : ValidatedErrorViewModelBase
     {
-
-        public ClientViewModel(Client client)
+        
+        public ClientViewModel(Client client, 
+            DataAccess dataAccess,
+            NavigationService<ClientListViewModel> navigationService,
+            EditCategory editCategory)
         {
             ID = client.ID;
             FirstName = client.FirstName;
@@ -22,6 +30,18 @@ namespace TourismOfficeApplication.ViewModels
             IdentityPath = client.Identitypath;
 
             ErrorsChanged += ClientViewModel_ErrorsChanged;
+            
+            if (editCategory == EditCategory.Insert)
+            {
+                EditClientCommand = new InsertClientCommand(dataAccess,navigationService);
+            }
+            else
+            {
+                //edit category is Update
+                EditClientCommand = new UpdateClientCommand(dataAccess,navigationService);
+            }
+            CancelCommand = new NavigationCommand<ClientListViewModel>(navigationService);
+            DeleteClientCommand = new DeleteClientCommand(dataAccess, navigationService);
         }
 
         
@@ -37,11 +57,9 @@ namespace TourismOfficeApplication.ViewModels
                 ClearErrors(nameof(FirstName));
                 if (string.IsNullOrEmpty(value))
                     AddError(nameof(FirstName), "الاسم الأول مطلوب");
-                else
-                {
-                    _firstName = value;
-                    OnPropertyChanged(nameof(FirstName));
-                }
+                _firstName = value;
+                OnPropertyChanged(nameof(FirstName));
+                
             }
         }
 
@@ -55,11 +73,9 @@ namespace TourismOfficeApplication.ViewModels
 
                 if (string.IsNullOrEmpty(value))
                     AddError(nameof(LastName), "الاسم الأخير مطلوب");
-                else
-                {
-                    _lastName = value;
-                    OnPropertyChanged(nameof(LastName));
-                }
+                _lastName = value;
+                OnPropertyChanged(nameof(LastName));
+                
             }
         }
 
@@ -84,32 +100,32 @@ namespace TourismOfficeApplication.ViewModels
             }
         }
 
-        private long? _nationalNumber;
-        public long? NationalNumber
+        private decimal? _nationalNumber;
+        public decimal? NationalNumber
         {
             get => _nationalNumber;
             set
             {
                 ClearErrors(nameof(NationalNumber));
 
-                bool is_valid = false;
-                if (value.ToString().Length != 10)
+
+                if (value.ToString()!.Length != 10)
                     AddError(nameof(NationalNumber), "الرقم الوطني يجب ان يتكون من عشرة ارقام");
-                else
-                    is_valid = true;
-                if (is_valid)
-                {
                     _nationalNumber = value;
                     OnPropertyChanged(nameof(NationalNumber));
-                }
+                
             }
         }
+
+        //Commands
+        public ICommand EditClientCommand { get; set; }
+        public ICommand CancelCommand { get; set; }
+        public ICommand DeleteClientCommand { get; set; }
         
         private void ClientViewModel_ErrorsChanged(object? sender, DataErrorsChangedEventArgs e)
         {
             OnPropertyChanged(nameof(CanConfirm));
         }
         public bool CanConfirm => !HasErrors;
-
     }
 }

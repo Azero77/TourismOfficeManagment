@@ -13,7 +13,10 @@ namespace TourismOfficeApplication.ViewModels
         public bool HasErrors => Errors.Any();
         public IEnumerable GetErrors(string? propertyName)
         {
-            return Errors.GetValueOrDefault(propertyName, null)!;
+            if (string.IsNullOrEmpty(propertyName))
+                return Errors.Values.SelectMany(e => e).ToList();
+
+            return Errors.TryGetValue(propertyName, out var propertyErrors) ? propertyErrors : Enumerable.Empty<string>();
         }
 
         public void AddError(string PropertyName, string error)
@@ -34,6 +37,7 @@ namespace TourismOfficeApplication.ViewModels
         {
             if (Errors.ContainsKey(propertyName))
                 Errors.Remove(propertyName);
+            OnErrorsChanged(propertyName);
         }
         public Dictionary<string, List<string>> Errors = new();
 

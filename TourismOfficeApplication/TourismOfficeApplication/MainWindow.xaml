@@ -17,6 +17,14 @@
             <views:ClientView/>
         </DataTemplate>
     </Window.Resources>
-    <ContentControl
-        Content="{Binding CurrentViewModel}"/>
+    <DockPanel>
+        <ToolBar DockPanel.Dock="Top">
+            <RadioButton
+                Command="{Binding NavigationCommandClientViewModel}"
+                >Add</RadioButton>
+            <RadioButton>View</RadioButton>
+        </ToolBar>
+        <ContentControl
+            Content="{Binding CurrentViewModel}"/>
+    </DockPanel>
 </Window>

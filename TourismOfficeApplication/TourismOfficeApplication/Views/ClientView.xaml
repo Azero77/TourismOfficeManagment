@@ -17,6 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.Resources>
             
@@ -85,17 +86,10 @@
                 Grid.Row="1"
                 Grid.Column="0"/>
             <TextBox
-                
+                Text="{Binding FirstName}"
                 Grid.Row="1"
                 Grid.Column="1"
                 >
-                <TextBox.Text>
-                    <Binding Path="FirstName">
-                        <Binding.ValidationRules>
-                            <validators:NotEmptyValidator/>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
             </TextBox>
 
 
@@ -152,11 +146,24 @@
         <DockPanel Grid.Row="1"
                    Margin="30">
             <Button DockPanel.Dock="Left"
-                    Content="Cancel"></Button>
+                    Content="Cancel"
+                    Command="{Binding CancelCommand}"></Button>
             <Button DockPanel.Dock="Right"
                     Content="Confirm"
                     IsEnabled="{Binding CanConfirm}"
+                    Command="{Binding EditClientCommand}"
+                    CommandParameter="{Binding}"
                     HorizontalAlignment="Right"></Button>
+            
         </DockPanel>
+        <Button Grid.Column="0"
+                HorizontalAlignment="Left"
+                Margin="30 0 0 10"
+                Grid.Row="2"
+                Content="Delete"
+                Command="{Binding DeleteClientCommand}"
+                CommandParameter="{Binding}">
+            
+        </Button>
     </Grid>
 </UserControl>

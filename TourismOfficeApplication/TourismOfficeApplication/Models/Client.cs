@@ -14,7 +14,7 @@ namespace TourismOfficeApplication.Models
            string lastName,
            char gender,
            string identitypath,
-           long nationalNumber)
+           decimal nationalNumber)
         {
             ID = id;
             FirstName = firstName;
@@ -33,6 +33,6 @@ namespace TourismOfficeApplication.Models
         public string? LastName { get; set; }
         public char? Gender { get; set; }
         public string? Identitypath { get; set; }
-        public long? NationalNumber { get; set; }
+        public decimal? NationalNumber { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Windows;
 using TourismOfficeApplication.Commands;
 using TourismOfficeApplication.Models;
 using TourismOfficeApplication.Models.DataAccess;
+using TourismOfficeApplication.Services;
 using TourismOfficeApplication.Stores;
 using TourismOfficeApplication.ViewModels;
 
@@ -45,6 +47,25 @@ namespace TourismOfficeApplication
             collection.AddScoped<MainWindow>(
                 (sp) => new() { DataContext = sp.GetRequiredService<MainViewModel>()});
             collection.AddScoped<DataAccess>(sp => new(ConnectionString));
+
+            collection.AddScoped<NavigationCommand<ClientViewModel>>();
+            collection.AddScoped<NavigationService<ClientViewModel>>(
+                sp => new(
+                    sp.GetRequiredService<NavigationStore>(),
+                    (tmp) => new ClientViewModel
+                                (new Client(),
+                                  sp.GetRequiredService<DataAccess>(),
+                                  sp.GetRequiredService<NavigationService<ClientListViewModel>>(),
+                                  EditCategory.Insert
+                    )));
+            collection.AddTransient<ClientListViewModel>();
+            collection.AddScoped<NavigationService<ClientListViewModel>>(
+                sp => new(
+                    sp.GetRequiredService<NavigationStore>(),
+                    (t) => sp.GetRequiredService<ClientListViewModel>()
+                    ));
+            collection.AddScoped<NavigationCommand<ClientListViewModel>>();
+            collection.AddScoped<NavigationCommand<ClientViewModel>>();
         }
 
        

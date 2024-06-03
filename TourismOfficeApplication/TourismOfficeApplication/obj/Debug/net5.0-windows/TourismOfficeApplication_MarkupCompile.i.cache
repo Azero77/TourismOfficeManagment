@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET5_0;NETCOREAPP
 E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\App.xaml
-3289188128
+4-1853139068
 
-21-1079244228
+30-769338518
 198-1332363261
-MainWindow.xaml;Views\ClientListView.xaml;Views\ClientView.xaml;
+MainWindow.xaml;Views\ClientListView.xaml;Views\ClientView.xaml;Windows\DetailsWindow.xaml;
 
-False
+True
 

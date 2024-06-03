@@ -38,27 +38,39 @@ namespace TourismOfficeApplication.Models.DataAccess
             var result = await RunQuery<Client>(query, null);
             return (IEnumerable<Client>)result;
         }
+        public async Task<IEnumerable<Client>> GetClients(string SearchQuery) 
+        {
+            string query = "SELECT * FROM Clients WHERE FirstName LIKE @name";
+            object param = new { name =  SearchQuery + "%"};
+            var result = await RunQuery<Client>(query, param);
+            return (IEnumerable<Client>) result;
+        }
+
+
 
         //RunQuery To Return object of type T
         //if type is int then Execute method is invoked
         public async Task<object> RunQuery<T>(string query, object? param)
         {
             OleDbConnection sqlConnection = GetConnection();
-            object result;
+            object result = new();
             await sqlConnection.OpenAsync();
 
-            if (typeof(T) == typeof(int))
-            { }
-
+            //Execute Command
+            
             try
             {
-                result = await sqlConnection.QueryAsync<T>(query, param);
+                if (typeof(T) == typeof(int))
+                {
+                    result =  await sqlConnection.ExecuteAsync(query, param);
+                }
+                else
+                   result =  await sqlConnection.QueryAsync<T>(query, param);
 
             }
             catch (Exception)
             {
                 //TODO
-                result = new();
                 MessageBox.Show("Something Went Wrong Please Try Again");
             }
             finally

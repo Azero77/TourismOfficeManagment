@@ -77,3 +77,5 @@ E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\
 E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\Debug\net5.0-windows\TourismOfficeApplication.csproj.CopyComplete
 E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\Debug\net5.0-windows\TourismOfficeApplication.genruntimeconfig.cache
 E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\Debug\net5.0-windows\ref\TourismOfficeApplication.dll
+E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\Debug\net5.0-windows\Windows\DetailsWindow.g.cs
+E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\Debug\net5.0-windows\Windows\DetailsWindow.baml
