@@ -4,12 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TourismOfficeApplication.Views"
+             xmlns:validators="clr-namespace:TourismOfficeApplication.Validators"
              xmlns:converters ="clr-namespace:TourismOfficeApplication.Converters"
              mc:Ignorable="d" 
              Background="White"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
 
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
         <Grid.Resources>
             
             <ControlTemplate
@@ -40,9 +48,12 @@
                 <Setter Property="Validation.ErrorTemplate"
                         Value="{StaticResource ValidatorTextBox}"/>
             </Style>
+            
         </Grid.Resources>
         <!--Grid For inserting new values to properties-->
-        <Grid Name="PropertiesContainer">
+        <Grid Name="PropertiesContainer"
+              Grid.ColumnSpan="3"
+              >
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -54,7 +65,7 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" SharedSizeGroup="WidthGroup"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
@@ -75,11 +86,18 @@
                 Grid.Column="0"/>
             <TextBox
                 
-                Text="{Binding FirstName}"
                 Grid.Row="1"
                 Grid.Column="1"
-                />
-            
+                >
+                <TextBox.Text>
+                    <Binding Path="FirstName">
+                        <Binding.ValidationRules>
+                            <validators:NotEmptyValidator/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
 
             <!--LastName-->
             <Label
@@ -131,7 +149,14 @@
                 Grid.Column="1"
                 Text="{Binding NationalNumber}"/>
         </Grid>
-
-
+        <DockPanel Grid.Row="1"
+                   Margin="30">
+            <Button DockPanel.Dock="Left"
+                    Content="Cancel"></Button>
+            <Button DockPanel.Dock="Right"
+                    Content="Confirm"
+                    IsEnabled="{Binding CanConfirm}"
+                    HorizontalAlignment="Right"></Button>
+        </DockPanel>
     </Grid>
 </UserControl>

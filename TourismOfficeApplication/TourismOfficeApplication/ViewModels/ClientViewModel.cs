@@ -9,8 +9,9 @@ using TourismOfficeApplication.Models;
 
 namespace TourismOfficeApplication.ViewModels
 {
-    public class ClientViewModel : ViewModelBase, INotifyDataErrorInfo
+    public class ClientViewModel : ValidatedErrorViewModelBase
     {
+
         public ClientViewModel(Client client)
         {
             ID = client.ID;
@@ -19,7 +20,11 @@ namespace TourismOfficeApplication.ViewModels
             Gender = client.Gender;
             NationalNumber = client.NationalNumber;
             IdentityPath = client.Identitypath;
+
+            ErrorsChanged += ClientViewModel_ErrorsChanged;
         }
+
+        
 
         public int ID { get; set; }
 
@@ -99,36 +104,12 @@ namespace TourismOfficeApplication.ViewModels
                 }
             }
         }
-        //Error Handling Section
-        public Dictionary<string, List<string>> Errors = new();
-
-        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-
-
-        public bool HasErrors => Errors.Any();
-
-        public IEnumerable GetErrors(string? propertyName)
+        
+        private void ClientViewModel_ErrorsChanged(object? sender, DataErrorsChangedEventArgs e)
         {
-            return Errors.GetValueOrDefault(propertyName, null)!;
+            OnPropertyChanged(nameof(CanConfirm));
         }
+        public bool CanConfirm => !HasErrors;
 
-        public void AddError(string PropertyName, string error) 
-        {
-            if (!Errors.ContainsKey(PropertyName))
-                Errors.Add(PropertyName, new List<string>() { error });
-            else
-                Errors[PropertyName].Add(error);
-            OnErrorsChanged(PropertyName);
-        }
-
-        public void OnErrorsChanged(string propertyName) 
-        {
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-        }
-        public void ClearErrors(string propertyName)
-        {
-            if (Errors.ContainsKey(propertyName))
-                Errors.Remove(propertyName);
-        }
     }
 }
