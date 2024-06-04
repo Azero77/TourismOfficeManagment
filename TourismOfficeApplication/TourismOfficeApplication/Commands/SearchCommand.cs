@@ -42,7 +42,7 @@ namespace TourismOfficeApplication.Commands
             }
             catch (InvalidDataException)
             {
-                _viewModel.ErrorMessage = "Please Use Some Valid Inputs";
+                _viewModel.ErrorMessage = "من فضلك أدخل معلومات صحيحة";
             }
             
 

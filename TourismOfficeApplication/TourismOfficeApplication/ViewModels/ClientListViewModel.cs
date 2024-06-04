@@ -16,6 +16,7 @@ namespace TourismOfficeApplication.ViewModels
 {
     public class ClientListViewModel : ViewModelBase
     {
+        
         public ICommand SearchCommand { get; set; }
         public ICommand ShowDetailsCommand { get; set; }
         public ICommand EditClientCommand { get; set; }

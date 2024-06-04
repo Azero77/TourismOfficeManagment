@@ -17,6 +17,7 @@ namespace TourismOfficeApplication.Models.DataAccess
     {
         private string _connectionString = string.Empty;
 
+        
         public string ConnectionString
         {
             get => _connectionString;
@@ -27,6 +28,7 @@ namespace TourismOfficeApplication.Models.DataAccess
         public DataAccess(string connectionString)
         {
             ConnectionString = connectionString;
+            
         }
 
         private OleDbConnection GetConnection()
@@ -114,6 +116,7 @@ namespace TourismOfficeApplication.Models.DataAccess
 
             return result;
         }
+        
 
     }
 }
