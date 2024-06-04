@@ -29,13 +29,24 @@ namespace TourismOfficeApplication.ViewModels
             }
         }
 
+        //For Checking The List is loaded to change the loading spinner
+        bool isLoading = true;
+        public bool IsLoading
+        {
+            get => isLoading;
+            set 
+            {
+                isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
 
         public ClientListViewModel(DataAccess dataAccess,
                                     NavigationStore navigationStore)
         {
             /*dataAccess.GetClients().ContinueWith((t) => Clients = 
             new ObservableCollection<Client>(t.Result));*/
-            LoadClients(dataAccess);
+            LoadClients(dataAccess).ContinueWith(r => IsLoading = false);
             EditClientCommand = new NavigationCommand<ClientViewModel>(
                 new NavigationService<ClientViewModel>(navigationStore,(client) => 
                 new((Client) client!, dataAccess,new NavigationService<ClientListViewModel>(navigationStore,
@@ -60,6 +71,9 @@ namespace TourismOfficeApplication.ViewModels
 
         //method for updating collection when search is invoked
 
+        ~ClientListViewModel()
+        {
 
+        }
     }
 }

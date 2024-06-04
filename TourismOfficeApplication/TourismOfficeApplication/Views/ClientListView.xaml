@@ -3,10 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:TourismOfficeApplication.Views"
+             xmlns:local="clr-namespace:TourismOfficeApplication.Views" xmlns:loadingspinnercontrol="clr-namespace:LoadingSpinnerControl;assembly=LoadingSpinnerControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid Name="GridContainer">
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
@@ -38,7 +39,19 @@
                 CanUserAddRows="False"
                 Grid.ColumnSpan="2"
                 ItemsSource="{Binding Clients}"
-                AutoGenerateColumns="False">
+                AutoGenerateColumns="False"
+                IsVisibleChanged="DataGrid_IsVisibleChanged">
+            <DataGrid.Style>
+                <Style TargetType="DataGrid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoading}" Value="false">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+
+            </DataGrid.Style>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Name">
                     <DataGridTemplateColumn.CellTemplate>
@@ -78,5 +91,15 @@
             </DataGrid.Columns>
             
         </DataGrid>
+        <loadingspinnercontrol:LoadingSpinner 
+            Name="LoadingSpinner"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            IsLoading="{Binding IsLoading}" 
+            Thickness="2"
+            >
+            
+        </loadingspinnercontrol:LoadingSpinner>
     </Grid>
 </UserControl>

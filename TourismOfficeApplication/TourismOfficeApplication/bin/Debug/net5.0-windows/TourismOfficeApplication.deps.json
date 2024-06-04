@@ -9,6 +9,7 @@
       "TourismOfficeApplication/1.0.0": {
         "dependencies": {
           "Dapper": "2.1.35",
+          "LoadingSpinner.WPF": "1.0.0",
           "Microsoft.Extensions.DependencyInjection": "8.0.0",
           "System.Data.OleDb": "5.0.0",
           "System.Data.SqlClient": "4.8.6"
@@ -22,6 +23,14 @@
           "lib/net5.0/Dapper.dll": {
             "assemblyVersion": "2.0.0.0",
             "fileVersion": "2.1.35.13827"
+          }
+        }
+      },
+      "LoadingSpinner.WPF/1.0.0": {
+        "runtime": {
+          "lib/netcoreapp3.1/LoadingSpinnerControl.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -191,6 +200,13 @@
       "sha512": "sha512-YKRwjVfrG7GYOovlGyQoMvr1/IJdn+7QzNXJxyMh0YfFF5yvDmTYaJOVYWsckreNjGsGSEtrMTpnzxTUq/tZQw==",
       "path": "dapper/2.1.35",
       "hashPath": "dapper.2.1.35.nupkg.sha512"
+    },
+    "LoadingSpinner.WPF/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-szXy14LPJMKOG51LfOP4nLx9CtqsODA52LzUHHN+N8WXTIxu99289aTZMHRywomsVPiOtA4RKgWqPm/uffOUmw==",
+      "path": "loadingspinner.wpf/1.0.0",
+      "hashPath": "loadingspinner.wpf.1.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.DependencyInjection/8.0.0": {
       "type": "package",

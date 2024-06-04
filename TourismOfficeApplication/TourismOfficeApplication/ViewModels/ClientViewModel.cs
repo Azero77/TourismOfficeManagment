@@ -16,7 +16,7 @@ namespace TourismOfficeApplication.ViewModels
 {
     public class ClientViewModel : ValidatedErrorViewModelBase
     {
-        
+        public bool IsUpdateCommand { get; }
         public ClientViewModel(Client client, 
             DataAccess dataAccess,
             NavigationService<ClientListViewModel> navigationService,
@@ -30,7 +30,7 @@ namespace TourismOfficeApplication.ViewModels
             IdentityPath = client.Identitypath;
 
             ErrorsChanged += ClientViewModel_ErrorsChanged;
-            
+            IsUpdateCommand = editCategory == EditCategory.Update;
             if (editCategory == EditCategory.Insert)
             {
                 EditClientCommand = new InsertClientCommand(dataAccess,navigationService);

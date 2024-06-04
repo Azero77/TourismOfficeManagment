@@ -24,5 +24,11 @@ namespace TourismOfficeApplication.Views
         {
             InitializeComponent();
         }
+
+        private void DataGrid_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if(LoadingSpinner.IsVisible)
+                GridContainer.Children.Remove(LoadingSpinner);
+        }
     }
 }

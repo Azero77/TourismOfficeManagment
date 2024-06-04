@@ -79,3 +79,4 @@ E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\
 E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\Debug\net5.0-windows\ref\TourismOfficeApplication.dll
 E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\Debug\net5.0-windows\Windows\DetailsWindow.g.cs
 E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\obj\Debug\net5.0-windows\Windows\DetailsWindow.baml
+E:\TourismOfficeManagment\TourismOfficeApplication\TourismOfficeApplication\bin\Debug\net5.0-windows\LoadingSpinnerControl.dll

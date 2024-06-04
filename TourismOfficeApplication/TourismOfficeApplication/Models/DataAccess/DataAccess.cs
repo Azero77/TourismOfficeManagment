@@ -34,6 +34,7 @@ namespace TourismOfficeApplication.Models.DataAccess
 
         public async Task<IEnumerable<Client>> GetClients()
         {
+            await Task.Delay(5000);
             string query = "SELECT * FROM Clients";
             var result = await RunQuery<Client>(query, null);
             return (IEnumerable<Client>)result;

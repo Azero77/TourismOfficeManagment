@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "tljl+IwyYR7krPlCpjwMzVwZxCj7MGKX5o3xgHXLL7Z+tYasyuxLi7Ctn7/gxYwOmvd+1N9uuZl8EeM869vJSw==",
+  "dgSpecHash": "XV9E7Yfra7IrMNhsV+JHHcpTKjAG8MR4MYSMfV+8lEJnbd0aYNTxCKZdl7ovI7SeHDIJwGsFg5SQYZeAT1n5og==",
   "success": true,
   "projectFilePath": "E:\\TourismOfficeManagment\\TourismOfficeApplication\\TourismOfficeApplication\\TourismOfficeApplication.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mazag\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
+    "C:\\Users\\mazag\\.nuget\\packages\\loadingspinner.wpf\\1.0.0\\loadingspinner.wpf.1.0.0.nupkg.sha512",
     "C:\\Users\\mazag\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
     "C:\\Users\\mazag\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\mazag\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
