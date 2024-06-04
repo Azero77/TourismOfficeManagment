@@ -1,33 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TourismOfficeApplication.Models;
 using TourismOfficeApplication.Models.DataAccess;
+using TourismOfficeApplication.ViewModels;
 
 namespace TourismOfficeApplication.Commands
 {
     public class SearchCommand : CommandBase
     {
+        private readonly ClientListViewModel _viewModel;
         private readonly DataAccess _dataAccess;
         private ObservableCollection<Client> _observableCollection;
 
-        public SearchCommand(DataAccess dataAccess, ObservableCollection<Client> ObservableCollection) 
+        public SearchCommand(ClientListViewModel viewModel,DataAccess dataAccess, ObservableCollection<Client> ObservableCollection) 
         {
+            _viewModel = viewModel;
             _dataAccess = dataAccess;
             _observableCollection = ObservableCollection;
         }
         public override async void Execute(object? parameter)
         {
-            string SearchQuery = (parameter as string)!;
-            IEnumerable<Client> result = await _dataAccess.GetClients(SearchQuery);
-            _observableCollection?.Clear();
-            foreach (Client client in result)
+            object[]? values = (object[]?)parameter;
+            string? SearchQuery = values?[0] as string;
+            string? propertyName = values?[1] as string;
+            IEnumerable<Client> result;
+            try
             {
-                _observableCollection.Add(client);
+                _observableCollection?.Clear();
+
+                result = await _dataAccess.GetClients(SearchQuery, propertyName!);
+                foreach (Client client in result)
+                {
+                    _observableCollection?.Add(client);
+                }
+                _viewModel.StatusMessage = "عدد النتائج:" + (_observableCollection?.Count.ToString() ?? "0");
             }
+            catch (InvalidDataException)
+            {
+                _viewModel.ErrorMessage = "Please Use Some Valid Inputs";
+            }
+            
 
         }
     }

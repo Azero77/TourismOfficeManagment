@@ -49,10 +49,15 @@ namespace TourismOfficeApplication.ViewModels
             LoadClients(dataAccess).ContinueWith(r => IsLoading = false);
             EditClientCommand = new NavigationCommand<ClientViewModel>(
                 new NavigationService<ClientViewModel>(navigationStore,(client) => 
-                new((Client) client!, dataAccess,new NavigationService<ClientListViewModel>(navigationStore,
+                new((Client) client!, dataAccess,new NavigationService<ViewModelBase>(navigationStore,
                 (tmp)=> new ClientListViewModel(dataAccess,navigationStore)), EditCategory.Update)));
             ShowDetailsCommand = new ShowDetailsCommand();
-            SearchCommand = new SearchCommand(dataAccess, Clients);
+            SearchCommand = new SearchCommand(this,dataAccess, Clients);
+
+            GetPropertiesNames = typeof(Client).GetProperties()
+                                                .Select(p => p.Name);
+            ErrorMessageViewModel = new();
+            StatusMessageViewModel = new();
         }
 
         private async Task LoadClients(DataAccess dataAccess) 
@@ -71,9 +76,28 @@ namespace TourismOfficeApplication.ViewModels
 
         //method for updating collection when search is invoked
 
-        ~ClientListViewModel()
-        {
+        public IEnumerable<string> GetPropertiesNames { get; set; }
 
+
+        //Message Indicators Failing or Success
+        public MessageViewModel ErrorMessageViewModel { get; set; }
+        public string ErrorMessage
+        { 
+            set
+            {
+                ErrorMessageViewModel.Message = value;
+                StatusMessageViewModel.Message = string.Empty;
+            }
+        }
+        public MessageViewModel StatusMessageViewModel { get; set; }
+        //Added setter only property to facilite and encapsulate reaching ViewModels
+        public string StatusMessage 
+        {
+            set
+            {
+                StatusMessageViewModel.Message = value;
+                ErrorMessageViewModel.Message = string.Empty;
+            }
         }
     }
 }

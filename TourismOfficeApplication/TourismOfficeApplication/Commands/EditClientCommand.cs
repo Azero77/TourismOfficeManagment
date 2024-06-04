@@ -13,10 +13,10 @@ namespace TourismOfficeApplication.Commands
     public abstract class EditClientCommand : CommandBase
     {
         protected DataAccess _sqlDataAccess;
-        private readonly NavigationService<ClientListViewModel> _navigationService;
+        private readonly NavigationService<ViewModelBase> _navigationService;
         protected string query = string.Empty;
 
-        protected EditClientCommand(DataAccess sqlDataAccess,NavigationService<ClientListViewModel> navigationService)
+        protected EditClientCommand(DataAccess sqlDataAccess,NavigationService<ViewModelBase> navigationService)
         {
             _sqlDataAccess = sqlDataAccess;
             _navigationService = navigationService;

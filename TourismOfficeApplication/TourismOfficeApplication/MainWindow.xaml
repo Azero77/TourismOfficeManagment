@@ -11,7 +11,7 @@
         FlowDirection="RightToLeft">
 
     <Window.Resources>
-        <DataTemplate DataType="{x:Type vms:ClientListViewModel}">
+        <DataTemplate DataType="{x:Type vms:ViewModelBase}">
             <views:ClientListView></views:ClientListView>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vms:ClientViewModel}">

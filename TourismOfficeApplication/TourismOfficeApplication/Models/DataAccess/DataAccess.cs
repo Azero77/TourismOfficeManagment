@@ -7,6 +7,9 @@ using System.Windows;
 using Dapper;
 using System.Data.SqlClient;
 using System.Data.OleDb;
+using System.Reflection;
+using System.Collections;
+using System.IO;
 
 namespace TourismOfficeApplication.Models.DataAccess
 {
@@ -34,17 +37,47 @@ namespace TourismOfficeApplication.Models.DataAccess
 
         public async Task<IEnumerable<Client>> GetClients()
         {
-            await Task.Delay(5000);
             string query = "SELECT * FROM Clients";
             var result = await RunQuery<Client>(query, null);
             return (IEnumerable<Client>)result;
         }
-        public async Task<IEnumerable<Client>> GetClients(string SearchQuery) 
+        public async Task<IEnumerable<Client>> GetClients(string? SearchQuery) 
         {
             string query = "SELECT * FROM Clients WHERE FirstName LIKE @name";
             object param = new { name =  SearchQuery + "%"};
             var result = await RunQuery<Client>(query, param);
             return (IEnumerable<Client>) result;
+        }
+        public async Task<IEnumerable<Client>> GetClients(string? SearchQuery, string propertyName = "FirstName")
+        {
+            if (SearchQuery is null)
+                return await GetClients();
+            PropertyInfo? Property = typeof(Client).GetProperty(propertyName);
+            string query;
+            object param;
+            if (Property?.PropertyType == typeof(string))
+            {
+                query = $"SELECT * FROM Clients WHERE {propertyName} LIKE @value";
+
+                param = new { value = SearchQuery + "%" };
+            }
+            else
+            {
+                query = $"SELECT * FROM Clients WHERE {propertyName} = {SearchQuery}";
+                
+                if (long.TryParse(SearchQuery,out _)) 
+                {
+                    param = new {value = SearchQuery };
+                }
+                else
+                {
+                    throw new InvalidDataException();
+                }
+            }
+            
+            var result = await RunQuery<Client>(query, param);
+            return (IEnumerable<Client>)result;
+            throw new Exception(propertyName + "Is not a valid Property");
         }
 
 

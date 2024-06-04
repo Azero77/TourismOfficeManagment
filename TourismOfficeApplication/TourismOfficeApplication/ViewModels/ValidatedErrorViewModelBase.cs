@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TourismOfficeApplication.ViewModels
 {
-    public class ValidatedErrorViewModelBase : ViewModelBase , INotifyDataErrorInfo
+    public class ValidatedErrorViewModelBase : ViewModelBase, INotifyDataErrorInfo
     {
         public bool HasErrors => Errors.Any();
         public IEnumerable GetErrors(string? propertyName)

@@ -55,16 +55,16 @@ namespace TourismOfficeApplication
                     (tmp) => new ClientViewModel
                                 (new Client(),
                                   sp.GetRequiredService<DataAccess>(),
-                                  sp.GetRequiredService<NavigationService<ClientListViewModel>>(),
+                                  sp.GetRequiredService<NavigationService<ViewModelBase>>(),
                                   EditCategory.Insert
                     )));
-            collection.AddTransient<ClientListViewModel>();
-            collection.AddScoped<NavigationService<ClientListViewModel>>(
+            collection.AddTransient<ViewModelBase>();
+            collection.AddScoped<NavigationService<ViewModelBase>>(
                 sp => new(
                     sp.GetRequiredService<NavigationStore>(),
-                    (t) => sp.GetRequiredService<ClientListViewModel>()
+                    (t) => sp.GetRequiredService<ViewModelBase>()
                     ));
-            collection.AddScoped<NavigationCommand<ClientListViewModel>>();
+            collection.AddScoped<NavigationCommand<ViewModelBase>>();
             collection.AddScoped<NavigationCommand<ClientViewModel>>();
         }
 

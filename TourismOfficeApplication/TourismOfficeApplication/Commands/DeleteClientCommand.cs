@@ -15,9 +15,9 @@ namespace TourismOfficeApplication.Commands
     public class DeleteClientCommand : CommandBase
     {
         private DataAccess _dataAccess;
-        private readonly NavigationService<ClientListViewModel> navigationService;
+        private readonly NavigationService<ViewModelBase> navigationService;
 
-        public DeleteClientCommand(DataAccess dataAccess, NavigationService<ClientListViewModel> navigationService)
+        public DeleteClientCommand(DataAccess dataAccess, NavigationService<ViewModelBase> navigationService)
         {
             _dataAccess = dataAccess;
             this.navigationService = navigationService;

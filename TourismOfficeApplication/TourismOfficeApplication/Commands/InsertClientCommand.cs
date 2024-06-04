@@ -12,7 +12,7 @@ namespace TourismOfficeApplication.Commands
     public class InsertClientCommand : EditClientCommand
     {
         public InsertClientCommand(DataAccess sqlDataAccess,
-            NavigationService<ClientListViewModel> navigationCommandClientListViewModel) 
+            NavigationService<ViewModelBase> navigationCommandClientListViewModel) 
             : base(sqlDataAccess, navigationCommandClientListViewModel)
         {
 

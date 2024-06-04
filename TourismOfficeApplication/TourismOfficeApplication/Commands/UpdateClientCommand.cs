@@ -13,7 +13,7 @@ namespace TourismOfficeApplication.Commands
     public class UpdateClientCommand : EditClientCommand
     {
         public UpdateClientCommand(DataAccess sqlDataAccess,
-            NavigationService<ClientListViewModel> navigationCommandClientListViewModel)
+            NavigationService<ViewModelBase> navigationCommandClientListViewModel)
             : base(sqlDataAccess, navigationCommandClientListViewModel)
         {
             query = "UPDATE Clients " +

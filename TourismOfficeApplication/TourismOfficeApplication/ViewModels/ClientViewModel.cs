@@ -19,7 +19,7 @@ namespace TourismOfficeApplication.ViewModels
         public bool IsUpdateCommand { get; }
         public ClientViewModel(Client client, 
             DataAccess dataAccess,
-            NavigationService<ClientListViewModel> navigationService,
+            NavigationService<ViewModelBase> navigationService,
             EditCategory editCategory)
         {
             ID = client.ID;
@@ -40,7 +40,7 @@ namespace TourismOfficeApplication.ViewModels
                 //edit category is Update
                 EditClientCommand = new UpdateClientCommand(dataAccess,navigationService);
             }
-            CancelCommand = new NavigationCommand<ClientListViewModel>(navigationService);
+            CancelCommand = new NavigationCommand<ViewModelBase>(navigationService);
             DeleteClientCommand = new DeleteClientCommand(dataAccess, navigationService);
         }
 
@@ -127,5 +127,9 @@ namespace TourismOfficeApplication.ViewModels
             OnPropertyChanged(nameof(CanConfirm));
         }
         public bool CanConfirm => !HasErrors;
+        ~ClientViewModel()
+        {
+
+        }
     }
 }
