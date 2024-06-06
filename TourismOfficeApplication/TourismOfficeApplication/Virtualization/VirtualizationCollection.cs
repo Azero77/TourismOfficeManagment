@@ -21,7 +21,7 @@ namespace TourismOfficeApplication.Virtualization
             _pageSize = pageSize;
             _pageTimeOut = pageTimeOut;
         }
-
+        
         public VirtualizationCollection(IItemsProvider<T> itemsProvider, int pageSize)
         {
             _itemsProvider = itemsProvider;
