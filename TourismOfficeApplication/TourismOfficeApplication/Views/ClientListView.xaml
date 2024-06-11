@@ -96,7 +96,8 @@
             Grid.ColumnSpan="2"
             ItemsSource="{Binding Clients}"
             AutoGenerateColumns="False"
-            IsVisibleChanged="DataGrid_IsVisibleChanged">
+            >
+            <!--IsVisibleChanged="DataGrid_IsVisibleChanged"-->
             <DataGrid.Style>
                 <Style TargetType="DataGrid">
                     <Style.Triggers>
@@ -147,15 +148,15 @@
             </DataGrid.Columns>
 
         </DataGrid>
-        <loadingspinnercontrol:LoadingSpinner
-            Name="LoadingSpinner"
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            HorizontalAlignment="Center"
-            IsLoading="{Binding IsLoading}"
-            Thickness="2"
-            >
+        <!--<loadingspinnercontrol:LoadingSpinner
+        Name="LoadingSpinner"
+        Grid.Row="1"
+        Grid.ColumnSpan="2"
+        HorizontalAlignment="Center"
+        IsLoading="{Binding IsLoading}"
+        Thickness="2"
+        >
 
-        </loadingspinnercontrol:LoadingSpinner>
+        </loadingspinnercontrol:LoadingSpinner>-->
     </Grid>
 </UserControl>

@@ -10,6 +10,7 @@ using TourismOfficeApplication.Models;
 using TourismOfficeApplication.Models.DataAccess;
 using TourismOfficeApplication.Services;
 using TourismOfficeApplication.Stores;
+using TourismOfficeApplication.Virtualization;
 
 
 namespace TourismOfficeApplication.ViewModels
@@ -20,15 +21,9 @@ namespace TourismOfficeApplication.ViewModels
         public ICommand SearchCommand { get; set; }
         public ICommand ShowDetailsCommand { get; set; }
         public ICommand EditClientCommand { get; set; }
-        private ObservableCollection<Client> clients = new();
-        public ObservableCollection<Client> Clients { 
-            get => clients;
-            set 
-            {
-                clients = value;
-                OnPropertyChanged(nameof(Clients));
-            }
-        }
+        //private ObservableCollection<Client> clients = new();
+        public VirtualizationCollection<Client> Clients { get; set; }
+         
 
         //For Checking The List is loaded to change the loading spinner
         bool isLoading = true;
@@ -41,24 +36,34 @@ namespace TourismOfficeApplication.ViewModels
                 OnPropertyChanged(nameof(IsLoading));
             }
         }
+        IItemsProvider<Client> ClientsProvider { get; set; }
+
 
         public ClientListViewModel(DataAccess dataAccess,
-                                    NavigationStore navigationStore)
+                                    NavigationStore navigationStore
+                                    )
         {
+            ClientsProvider = new DataProvider<Client>(dataAccess,"Clients");
             /*dataAccess.GetClients().ContinueWith((t) => Clients = 
             new ObservableCollection<Client>(t.Result));*/
-            LoadClients(dataAccess).ContinueWith(r => IsLoading = false);
+            //LoadClients(dataAccess).ContinueWith(r => IsLoading = false);
             EditClientCommand = new NavigationCommand<ClientViewModel>(
                 new NavigationService<ClientViewModel>(navigationStore,(client) => 
                 new((Client) client!, dataAccess,new NavigationService<ViewModelBase>(navigationStore,
                 (tmp)=> new ClientListViewModel(dataAccess,navigationStore)), EditCategory.Update)));
             ShowDetailsCommand = new ShowDetailsCommand();
             SearchCommand = new SearchCommand(this,dataAccess, Clients);
-
+            Clients = new(ClientsProvider,10,2000);
+            //Clients.IsLoadingChanged += Clients_IsLoadingChanged;
             GetPropertiesNames = typeof(Client).GetProperties()
                                                 .Select(p => p.Name);
             ErrorMessageViewModel = new();
             StatusMessageViewModel = new();
+        }
+
+        private void Clients_IsLoadingChanged(bool obj)
+        {
+            IsLoading = obj;
         }
 
         private async Task LoadClients(DataAccess dataAccess) 

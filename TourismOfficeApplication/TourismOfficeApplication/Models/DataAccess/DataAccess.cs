@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Collections;
 using System.IO;
 using System.Data;
+using System.Windows.Media.Animation;
 
 namespace TourismOfficeApplication.Models.DataAccess
 {
@@ -99,10 +100,94 @@ namespace TourismOfficeApplication.Models.DataAccess
             {
                 if (typeof(T) == typeof(int))
                 {
-                    result =  await sqlConnection.ExecuteAsync(query, param);
+                    result = await sqlConnection.ExecuteAsync(query, param);
                 }
                 else
-                   result =  await sqlConnection.QueryAsync<T>(query, param);
+                    result = await sqlConnection.QueryAsync<T>(query, param);
+
+            }
+            catch (Exception e)
+            {
+                //TODO
+                MessageBox.Show("Something Went Wrong Please Try Again \n" + e.Message);
+            }
+            finally
+            {
+                await sqlConnection.CloseAsync();
+            }
+
+            return result;
+        }
+
+        public int GetCount(string tableName) 
+        {
+            string query = $"SELECT Count(*) FROM {tableName}";
+            OleDbConnection oleDbConnection = GetConnection();
+            oleDbConnection.Open();
+            int result = 0;
+            try
+            {
+                result =
+                    oleDbConnection.ExecuteScalar<int>(query);
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally 
+            {
+                oleDbConnection.Close();
+            }
+            return result;
+        }
+
+        public async Task<IEnumerable<T>> FetchRange<T>(
+                                            string tableName,
+                                            int offSet = 0,
+                                            int limit = 10
+                                            )
+        {
+            string query = $@"
+        SELECT * FROM (
+            SELECT TOP {limit} * FROM (
+                SELECT TOP {offSet + limit} * FROM {tableName} ORDER BY ID
+            ) AS T1
+            ORDER BY ID DESC
+        ) AS T2
+        ORDER BY ID;";
+            object param = new
+            {
+                offSet = offSet,
+                limit = limit
+            };
+            try
+            {
+                return (IEnumerable<T>) await RunQuery<T>(query, param);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+
+        public async Task<IEnumerable<T>> RunQuery<T>(string tableName) 
+        {
+            OleDbConnection sqlConnection = GetConnection();
+            IEnumerable<T> result = Enumerable.Empty<T>();
+            await sqlConnection.OpenAsync();
+
+            //Execute Command
+
+            try
+            {
+                string query = $"SELECT * FROM {tableName}";
+                result = await Task.Run(() =>
+                sqlConnection.Query<T>(query, buffered: false));
 
             }
             catch (Exception)
@@ -117,9 +202,37 @@ namespace TourismOfficeApplication.Models.DataAccess
 
             return result;
         }
-       
 
+        public async Task<IEnumerable<T>> RunQuery<T>(string tableName,
+                                                    Func<T,bool> predicate
+                                                    )
+        {
+            OleDbConnection sqlConnection = GetConnection();
+            IEnumerable<T> result = Enumerable.Empty<T>();
+            await sqlConnection.OpenAsync();
 
+            //Execute Command
 
+            try
+            {
+                string query = $"SELECT * FROM {tableName}";
+                result = await Task.Run(() =>
+                sqlConnection
+                .Query<T>(query, buffered: false)
+                .Where(predicate));
+
+            }
+            catch (Exception)
+            {
+                //TODO
+                MessageBox.Show("Something Went Wrong Please Try Again");
+            }
+            finally
+            {
+                await sqlConnection.CloseAsync();
+            }
+
+            return result;
+        }
     }
 }

@@ -47,6 +47,7 @@ namespace TourismOfficeApplication.Virtualization
                 {
                     _isLoading = value;
                     OnPropertyChanged(nameof(IsLoading));
+                    OnIsLoadingChanged(value);
                 }
             }
         }
@@ -74,6 +75,7 @@ namespace TourismOfficeApplication.Virtualization
         #region overriding LoadCount
         protected override void LoadCount()
         {
+            Count = 0;
             IsLoading = true;
             ThreadPool.QueueUserWorkItem(LoadCountWork);
         }
@@ -90,13 +92,16 @@ namespace TourismOfficeApplication.Virtualization
             IsLoading = false;
             FireCollectionReset();
         }
+
+        
         #endregion
 
         #region override LoadPage
         protected override void LoadPage(int pageIndex)
-        {
+        {/*
             IsLoading = true;
-            ThreadPool.QueueUserWorkItem(LoadPageWork,pageIndex);
+            ThreadPool.QueueUserWorkItem(LoadPageWork,pageIndex);*/
+            base.LoadPage(pageIndex);
         }
 
         private void LoadPageWork(object? args)
@@ -117,6 +122,33 @@ namespace TourismOfficeApplication.Virtualization
             IsLoading = false;
             FireCollectionReset();
 
+        }
+        #endregion
+
+        #region ChangeCollection
+        public override void ChangeProviderCollection(Func<T, bool> predicate)
+        {
+            IsLoading = true;
+            ThreadPool.QueueUserWorkItem(ChangeProviderWork, predicate);
+        }
+
+        private void ChangeProviderWork(object? args)
+        {
+            Func<T, bool> predicate = (Func<T, bool>) args!;
+            base.ChangeProviderCollection(predicate);
+            _synchronizationContext?.Send(ChangeProviderCompleted,null);
+        }
+
+        private void ChangeProviderCompleted(object? state)
+        {
+            IsLoading = false;
+            FireCollectionReset();
+        }
+
+        public event Action<bool> IsLoadingChanged;
+        public void OnIsLoadingChanged(bool value)
+        {
+            IsLoadingChanged?.Invoke(value);
         }
         #endregion
     }

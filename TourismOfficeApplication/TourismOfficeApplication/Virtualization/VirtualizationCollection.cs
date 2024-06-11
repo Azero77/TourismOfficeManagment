@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Navigation;
 
 namespace TourismOfficeApplication.Virtualization
 {
@@ -29,8 +32,8 @@ namespace TourismOfficeApplication.Virtualization
         }
         #endregion
         #region ItemsProvider        
-        IItemsProvider<T> _itemsProvider;
-        public IItemsProvider<T> ItemsProvider => _itemsProvider;
+        IItemsProvider<T>? _itemsProvider;
+        public IItemsProvider<T>? ItemsProvider => _itemsProvider;
         #endregion
         #region PageSize
         int _pageSize;
@@ -47,9 +50,11 @@ namespace TourismOfficeApplication.Virtualization
         {
             get 
             {
+                var test = (new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().DeclaringType.FullName;
                 if (_count == -1)
                     LoadCount();
                 return _count;
+                
             }
             protected set 
             {
@@ -71,9 +76,10 @@ namespace TourismOfficeApplication.Virtualization
         public T this[int index]
         { get 
             {
-                int pageIndex = Count / index;
-                int pageOffset = Count % index;
+                int pageIndex = index / PageSize;
+                int pageOffset = index % PageSize;
 
+                RequestPage(pageIndex);
                 if (pageOffset < PageSize / 2 && pageIndex != 0)
                     RequestPage(pageIndex - 1);
                 if (pageIndex > PageSize / 2 && pageIndex != Count / PageSize)
@@ -81,7 +87,7 @@ namespace TourismOfficeApplication.Virtualization
 
                 CleanUpPages();
                 if (_pages[pageIndex] == null)
-                    return default;
+                    return default(T);
                 return _pages[pageIndex][pageOffset];
             } 
         set => throw new NotImplementedException();
@@ -146,9 +152,31 @@ namespace TourismOfficeApplication.Virtualization
                 }
             }
         }
+        
+        
+        //Change The provider when doing search query by changing collection
+
+        public virtual void ChangeProviderCollection(Func<T, bool> predicate)
+        {
+            _itemsProvider?.ChangeCollection(predicate);
+        }
+        
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = 0; i < Count; i++)
+                yield return this[i];
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #region NotImplemented
         public bool IsReadOnly => throw new NotImplementedException();
 
-        public bool IsFixedSize => throw new NotImplementedException();
+        public bool IsFixedSize => false;
 
         public bool IsSynchronized => throw new NotImplementedException();
 
@@ -163,7 +191,6 @@ namespace TourismOfficeApplication.Virtualization
         {
             throw new NotImplementedException();
         }
-
         public bool Contains(T item)
         {
             throw new NotImplementedException();
@@ -173,18 +200,6 @@ namespace TourismOfficeApplication.Virtualization
         {
             throw new NotImplementedException();
         }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            for (int i = 0; i < Count; i++)
-                yield return this[i];
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
         public int IndexOf(T item)
         {
             throw new NotImplementedException();
@@ -217,7 +232,7 @@ namespace TourismOfficeApplication.Virtualization
 
         public int IndexOf(object? value)
         {
-            throw new NotImplementedException();
+            return 0;
         }
 
         public void Insert(int index, object? value)
@@ -234,6 +249,7 @@ namespace TourismOfficeApplication.Virtualization
         {
             throw new NotImplementedException();
         }
+        #endregion
 
     }
 }
