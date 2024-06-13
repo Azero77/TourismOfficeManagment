@@ -33,7 +33,8 @@ namespace TourismOfficeApplication.Commands
             {
                 _observableCollection?.Clear();
 
-                result = await _dataAccess.GetClients(SearchQuery, propertyName!);
+                //will add some object to be transfered to get to know what the limit and offset of the user
+                result = await _dataAccess.GetClients(SearchQuery, 10,0,propertyName!);
                 foreach (Client client in result)
                 {
                     _observableCollection?.Add(client);

@@ -11,6 +11,8 @@ using System.Reflection;
 using System.Collections;
 using System.IO;
 using System.Data;
+using System.Threading;
+using System.Windows.Navigation;
 
 namespace TourismOfficeApplication.Models.DataAccess
 {
@@ -37,51 +39,73 @@ namespace TourismOfficeApplication.Models.DataAccess
             OleDbConnection sqlConnection = new OleDbConnection(ConnectionString);
             return sqlConnection;
         }
-
-        public async Task<IEnumerable<Client>> GetClients()
+        
+        public async Task<IEnumerable<Client>> GetClients(int limit,int offSet)
         {
-            string query = "SELECT * FROM Clients";
-            var result = await RunQuery<Client>(query, null);
+            //string query = "SELECT * FROM Clients";
+            var query = @$"
+                SELECT * FROM (
+                    SELECT TOP {limit} * FROM (
+                        SELECT TOP {limit + offSet} *
+                        FROM Clients
+                    ) AS t1
+                    ORDER BY Id DESC
+                ) AS t2
+                ORDER BY Id";
+            var result = await RunQuery<Client>(query, new { a = 30 });
+            
             return (IEnumerable<Client>)result;
         }
-        public async Task<IEnumerable<Client>> GetClients(string? SearchQuery) 
+        /*public async Task<IEnumerable<Client>> GetClients(string? searchQuery) 
         {
             string query = "SELECT * FROM Clients WHERE FirstName LIKE @name";
-            object param = new { name =  SearchQuery + "%"};
+            object param = new { name =  searchQuery + "%"};
             var result = await RunQuery<Client>(query, param);
             return (IEnumerable<Client>) result;
-        }
-        public async Task<IEnumerable<Client>> GetClients(string? SearchQuery, string propertyName = "FirstName")
+        }*/
+        public async Task<IEnumerable<Client>> GetClients(
+            string? searchQuery,
+            int limit,
+            int offset,
+            string propertyName = "FirstName"
+            )
         {
-            if (SearchQuery is null)
-                return await GetClients();
-            PropertyInfo? Property = typeof(Client).GetProperty(propertyName);
             string query;
             object param;
-            if (Property?.PropertyType == typeof(string))
-            {
-                query = $"SELECT * FROM Clients WHERE {propertyName} LIKE @value";
-
-                param = new { value = SearchQuery + "%" };
-            }
-            else
-            {
-                query = $"SELECT * FROM Clients WHERE {propertyName} = {SearchQuery}";
+            string condition;
+            //Evaluate condiont and param depend on the type of the search query and the value
+            Evaluate(searchQuery, propertyName, out condition, out param);
                 
-                if (long.TryParse(SearchQuery,out _)) 
-                {
-                    param = new {value = SearchQuery };
-                }
-                else
-                {
-                    throw new InvalidDataException();
-                }
-            }
             
+            query =
+              $"SELECT TOP {limit} * FROM " +
+              $"(SELECT * FROM (SELECT TOP {limit + offset} * FROM Clients {condition}) as t1 " +
+              $"ORDER BY ID DESC) ORDER BY ID";
             var result = await RunQuery<Client>(query, param);
             return (IEnumerable<Client>)result;
-            throw new Exception(propertyName + "Is not a valid Property");
         }
+
+        public async Task<int> GetCountClient(string? searchQuery, string propertyName = "FirstName") 
+        {
+            string query = $"SELECT Count(*) FROM Clients";
+            object param;
+            string where;
+            
+            Evaluate(searchQuery, propertyName, out where, out param);
+            query += where;
+            try
+            {
+                var result = await RunQuery<int>(query,param);
+                return ((IEnumerable<int>)result).First();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
 
 
 
@@ -105,10 +129,10 @@ namespace TourismOfficeApplication.Models.DataAccess
                    result =  await sqlConnection.QueryAsync<T>(query, param);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 //TODO
-                MessageBox.Show("Something Went Wrong Please Try Again");
+                MessageBox.Show("Something Went Wrong Please Try Again \n\r" + e.Message);
             }
             finally
             {
@@ -117,9 +141,42 @@ namespace TourismOfficeApplication.Models.DataAccess
 
             return result;
         }
-       
 
 
+        private void Evaluate(
+                            string? searchQuery,
+                            string propertyName,
+                            out string where, 
+                            out object param) 
+        {
+            if (searchQuery is not null)
+            {
+                PropertyInfo? Property = typeof(Client).GetProperty(propertyName);
+                if (Property?.PropertyType == typeof(string))
+                {
+                    where = " WHERE {propertyName} LIKE @value";
+
+                    param = new { value = searchQuery + "%" };
+                }
+                else
+                {
+                    where = $"WHERE {propertyName} = {searchQuery}";
+
+                    if (long.TryParse(searchQuery, out _))
+                    {
+                        param = new { value = searchQuery };
+                        return;
+                    }
+                    else
+                    {
+                        throw new InvalidDataException();
+                    }
+                }
+            }
+            //else
+            where = string.Empty;
+            param = new object();
+        }
 
     }
 }

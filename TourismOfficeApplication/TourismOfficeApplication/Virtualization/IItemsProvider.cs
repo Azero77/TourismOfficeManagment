@@ -9,17 +9,17 @@ namespace TourismOfficeApplication.Virtualization
     public interface IItemsProvider<T>
     {
         /// <summary>
-        /// Get the Total number of available items
+        /// Return The number of items in the query that we are doing virtaulization with
         /// </summary>
         /// <returns></returns>
-        int FetchCount();
+        Task<int> FetchCount();
 
         /// <summary>
-        /// Fetch  <paramref name="count"/> number items starting from <paramref name="start"/>
+        /// Return a subQuery start from <paramref name="start"/> and continue to <paramref name="count"/>
         /// </summary>
         /// <param name="start"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        IList<T> FetchRange(int start, int count);
+        Task<IList<T>> FetchRange(int start, int count);
     }
 }

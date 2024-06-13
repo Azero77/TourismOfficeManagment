@@ -96,7 +96,7 @@
             Grid.ColumnSpan="2"
             ItemsSource="{Binding Clients}"
             AutoGenerateColumns="False"
-            IsVisibleChanged="DataGrid_IsVisibleChanged">
+            >
             <DataGrid.Style>
                 <Style TargetType="DataGrid">
                     <Style.Triggers>

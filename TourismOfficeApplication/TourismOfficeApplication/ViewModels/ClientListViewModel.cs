@@ -63,7 +63,8 @@ namespace TourismOfficeApplication.ViewModels
 
         private async Task LoadClients(DataAccess dataAccess) 
         {
-            var clients = await dataAccess.GetClients();
+            //Make a variable called pageSize and PageModel and bind it to VirtualizationCollection
+            var clients = await dataAccess.GetClients(null,10,0);
             UpdateClients(clients);
         }
 
