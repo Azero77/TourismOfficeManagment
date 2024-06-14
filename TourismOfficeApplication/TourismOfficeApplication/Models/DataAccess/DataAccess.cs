@@ -31,7 +31,6 @@ namespace TourismOfficeApplication.Models.DataAccess
         public DataAccess(string connectionString)
         {
             ConnectionString = connectionString;
-            
         }
 
         private OleDbConnection GetConnection()
@@ -53,6 +52,7 @@ namespace TourismOfficeApplication.Models.DataAccess
                 ) AS t2
                 ORDER BY Id";
             var result = await RunQuery<Client>(query, new { a = 30 });
+            
             
             return (IEnumerable<Client>)result;
         }
@@ -77,6 +77,7 @@ namespace TourismOfficeApplication.Models.DataAccess
               $"ORDER BY ID DESC) as t2 ORDER BY ID";
 
             var result = await RunQuery<Client>(query, param);
+            
             return (IEnumerable<Client>)result;
         }
 
@@ -111,9 +112,8 @@ namespace TourismOfficeApplication.Models.DataAccess
             OleDbConnection sqlConnection = GetConnection();
             object result = new();
             await sqlConnection.OpenAsync();
-
             //Execute Command
-            
+
             try
             {
                 if (typeof(T) == typeof(int))

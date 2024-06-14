@@ -74,7 +74,7 @@ namespace TourismOfficeApplication.Virtualization
             { get
                 {
                     if (_count == -1)
-                        LoadCount();
+                        LoadCount().Wait();
                     return _count;
                 }
             private set { _count = value; }
