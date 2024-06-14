@@ -45,6 +45,16 @@ namespace TourismOfficeApplication.Virtualization
         #endregion
         #region itemProvider
         IItemsProvider<T> _itemsProvider;
+        public IItemsProvider<T> ItemsProvider { set => _itemsProvider = value; }
+        #region ChangeProvider
+        public void ChangeProvider(IItemsProvider<T> provider)
+        {
+            ItemsProvider = provider;
+            _pages = new();
+            _pagesTimeOut = new();
+            RenderPage(0).ConfigureAwait(false);
+        }
+        #endregion
         #endregion
         #region Collection
         IList<T> _collection = new List<T>();

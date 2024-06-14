@@ -36,6 +36,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -157,5 +158,48 @@
             >
 
         </loadingspinnercontrol:LoadingSpinner>
+        <DockPanel Grid.Row="2">
+            <Button
+
+                >
+                <Button.CommandParameter>
+                    <MultiBinding>
+                        <MultiBinding.Converter>
+                            <converters:MultiCategorySearchConverter/>
+                        </MultiBinding.Converter>
+                        <Binding Path="Clients"/>
+                        <Binding Path="PageNumber"/>
+                        <Binding Path="PagesCount"/>
+                    </MultiBinding>
+                </Button.CommandParameter>
+                <Button.Command>
+                    <Binding Path="MoveNextCommand"/>
+                </Button.Command>
+                <Button.Content>
+                    Next
+                </Button.Content>
+            </Button>
+
+            <Button
+
+                >
+                <Button.CommandParameter>
+                    <MultiBinding>
+                        <MultiBinding.Converter>
+                            <converters:MultiCategorySearchConverter/>
+                        </MultiBinding.Converter>
+                        <Binding Path="Clients"/>
+                        <Binding Path="PageNumber"/>
+                        <Binding Path="PagesCount"/>
+                    </MultiBinding>
+                </Button.CommandParameter>
+                <Button.Command>
+                    <Binding Path="MovePrevoiusCommand"/>
+                </Button.Command>
+                <Button.Content>
+                    Previous
+                </Button.Content>
+            </Button>
+        </DockPanel>
     </Grid>
 </UserControl>

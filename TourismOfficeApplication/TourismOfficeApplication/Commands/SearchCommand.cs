@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TourismOfficeApplication.Models;
 using TourismOfficeApplication.Models.DataAccess;
 using TourismOfficeApplication.ViewModels;
+using TourismOfficeApplication.Virtualization;
 
 namespace TourismOfficeApplication.Commands
 {
@@ -15,15 +16,15 @@ namespace TourismOfficeApplication.Commands
     {
         private readonly ClientListViewModel _viewModel;
         private readonly DataAccess _dataAccess;
-        private ObservableCollection<Client> _observableCollection;
+        private VirtualizationCollection<Client> _collection;
 
-        public SearchCommand(ClientListViewModel viewModel,DataAccess dataAccess, ObservableCollection<Client> ObservableCollection) 
+        public SearchCommand(ClientListViewModel viewModel,DataAccess dataAccess, VirtualizationCollection<Client> collection) 
         {
             _viewModel = viewModel;
             _dataAccess = dataAccess;
-            _observableCollection = ObservableCollection;
+            _collection = collection;
         }
-        public override async void Execute(object? parameter)
+        public override void Execute(object? parameter)
         {
             object[]? values = (object[]?)parameter;
             string? SearchQuery = values?[0] as string;
@@ -31,15 +32,16 @@ namespace TourismOfficeApplication.Commands
             IEnumerable<Client> result;
             try
             {
-                _observableCollection?.Clear();
+                IItemsProvider<Client> provider = new ItemProvider<Client>(_dataAccess,SearchQuery,propertyName);
+                _collection.ChangeProvider(provider);
 
                 //will add some object to be transfered to get to know what the limit and offset of the user
-                result = await _dataAccess.GetClients(SearchQuery, 10,0,propertyName!);
+                /*result = await _dataAccess.GetClients(SearchQuery, 10,0,propertyName!);
                 foreach (Client client in result)
                 {
-                    _observableCollection?.Add(client);
-                }
-                _viewModel.StatusMessage = "عدد النتائج:" + (_observableCollection?.Count.ToString() ?? "0");
+                    _collection?.Add(client);
+                }*/
+                _viewModel.StatusMessage = "عدد النتائج:" + (_collection?.Count.ToString() ?? "0");
             }
             catch (InvalidDataException)
             {

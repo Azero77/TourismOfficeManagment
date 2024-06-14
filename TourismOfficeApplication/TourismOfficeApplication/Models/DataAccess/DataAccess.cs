@@ -149,13 +149,14 @@ namespace TourismOfficeApplication.Models.DataAccess
                 PropertyInfo? Property = typeof(Client).GetProperty(propertyName);
                 if (Property?.PropertyType == typeof(string))
                 {
-                    where = " WHERE {propertyName} LIKE @value";
+                    where = $" WHERE {propertyName} LIKE @value";
 
                     param = new { value = searchQuery + "%" };
+                    return;
                 }
                 else
                 {
-                    where = $"WHERE {propertyName} = {searchQuery}";
+                    where = $" WHERE {propertyName} = {searchQuery}";
 
                     if (long.TryParse(searchQuery, out _))
                     {

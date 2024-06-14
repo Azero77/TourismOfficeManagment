@@ -17,9 +17,13 @@ namespace TourismOfficeApplication.ViewModels
 {
     public class ClientListViewModel : ViewModelBase
     {
+        public int PageNumber { get; set; } = 0;
+        public int PagesCount { get; set; } = 10;
         public ICommand SearchCommand { get; set; }
         public ICommand ShowDetailsCommand { get; set; }
         public ICommand EditClientCommand { get; set; }
+        public ICommand MoveNextCommand { get; set; }
+        public ICommand MovePrevoiusCommand { get; set; }
         private VirtualizationCollection<Client> clients;
         public VirtualizationCollection<Client> Clients { 
             get => clients;
@@ -31,7 +35,7 @@ namespace TourismOfficeApplication.ViewModels
         }
 
         //For Checking The List is loaded to change the loading spinner
-        bool isLoading = true;
+        bool isLoading = false;
         public bool IsLoading
         {
             get => isLoading;
@@ -47,33 +51,27 @@ namespace TourismOfficeApplication.ViewModels
         {
             /*dataAccess.GetClients().ContinueWith((t) => Clients = 
             new ObservableCollection<Client>(t.Result));*/
-            LoadClients(dataAccess).ContinueWith(r => IsLoading = false);
+
+            Clients = new(new ItemProvider<Client>(dataAccess), 10, 1000);
             EditClientCommand = new NavigationCommand<ClientViewModel>(
                 new NavigationService<ClientViewModel>(navigationStore,(client) => 
                 new((Client) client!, dataAccess,new NavigationService<ViewModelBase>(navigationStore,
                 (tmp)=> new ClientListViewModel(dataAccess,navigationStore)), EditCategory.Update)));
             ShowDetailsCommand = new ShowDetailsCommand();
-            //SearchCommand = new SearchCommand(this,dataAccess, Clients);
+            SearchCommand = new SearchCommand(this,dataAccess, Clients);
 
             GetPropertiesNames = typeof(Client).GetProperties()
                                                 .Select(p => p.Name);
             ErrorMessageViewModel = new();
             StatusMessageViewModel = new();
+            MoveNextCommand = new MoveCommand<Client>(MoveState.MoveNext);
+            MovePrevoiusCommand = new MoveCommand<Client>(MoveState.MovePrevoius);
+            
         }
 
-        private async Task LoadClients(DataAccess dataAccess) 
+        private void LoadClients(DataAccess dataAccess) 
         {
-            Clients = new(new ItemProvider<Client>(dataAccess), 10, 1000);
-            //UpdateClients(clients);
         }
-
-        /*private void UpdateClients(IEnumerable<Client> clients)
-        {
-            foreach (var client in clients)
-            {
-                Clients.Add(client);
-            }
-        }*/
 
         //method for updating collection when search is invoked
 

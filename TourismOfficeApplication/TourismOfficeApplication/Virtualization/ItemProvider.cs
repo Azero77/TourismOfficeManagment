@@ -13,7 +13,16 @@ namespace TourismOfficeApplication.Virtualization
         {
             _dataAccess = dataAccess;
         }
+
+        public ItemProvider(DataAccess dataAccess, string searchQuery, string propertyName) 
+        {
+            _dataAccess = dataAccess;
+            _searchQuery = searchQuery;
+            _propertyName = propertyName;
+        }
         readonly DataAccess _dataAccess;
+        private readonly string? _searchQuery = null;
+        private readonly string? _propertyName = null;
         private int _count = -1;
 
         public int Count { 
@@ -22,7 +31,7 @@ namespace TourismOfficeApplication.Virtualization
         public async Task<int> FetchCount()
         {
             if (Count == -1)
-                await LoadCount(null,null);
+                await LoadCount(_searchQuery,_propertyName);
             return Count;
         }
 
@@ -36,7 +45,7 @@ namespace TourismOfficeApplication.Virtualization
 
         public async Task<IList<T>> FetchRange(int start, int count)
         {
-            IList<T> result = (List<T>) await _dataAccess.GetClients(null,count,start);
+            IList<T> result = (List<T>) await _dataAccess.GetClients(_searchQuery,count,start,_propertyName ?? "FirstName");
             return result;
         }
     }
