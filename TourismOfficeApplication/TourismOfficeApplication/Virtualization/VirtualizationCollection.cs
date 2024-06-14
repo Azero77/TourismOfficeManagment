@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TourismOfficeApplication.Virtualization
@@ -20,7 +21,7 @@ namespace TourismOfficeApplication.Virtualization
             _itemsProvider = itemsProvider;
             PageSize = pageSize;
             PageTimeOut = pageTimeOut;
-            RenderPage(0).ConfigureAwait(false) ;
+            Initialize().ConfigureAwait(false);
         }
         public VirtualizationCollection(IItemsProvider<T> itemsProvider, int pageSize)
         {
@@ -31,7 +32,22 @@ namespace TourismOfficeApplication.Virtualization
         }
         private async Task Initialize()
         {
-            await RenderPage(0);
+            IsLoading = true;
+            try
+            {
+                await LoadCount();
+                await RenderPage(0);
+            }
+            catch
+            {
+                Collection = new List<T>();
+                _pages = new();
+                _pagesTimeOut = new();
+                throw; }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         #endregion
@@ -47,12 +63,12 @@ namespace TourismOfficeApplication.Virtualization
         IItemsProvider<T> _itemsProvider;
         public IItemsProvider<T> ItemsProvider { set => _itemsProvider = value; }
         #region ChangeProvider
-        public void ChangeProvider(IItemsProvider<T> provider)
+        public async Task ChangeProvider(IItemsProvider<T> provider)
         {
             ItemsProvider = provider;
             _pages = new();
             _pagesTimeOut = new();
-            RenderPage(0).ConfigureAwait(false);
+            await Initialize().ConfigureAwait(false);
         }
         #endregion
         #endregion
@@ -82,16 +98,19 @@ namespace TourismOfficeApplication.Virtualization
         int _count;
         public int Count
             { get
-                {
-                    if (_count == -1)
-                        LoadCount().Wait();
-                    return _count;
-                }
-            private set { _count = value; }
+            {
+                return _count;
+            }
+            private set 
+            { 
+                _count = value;
+                OnPropertyChanged(nameof(Count));
+            }
         }
 
         private async Task LoadCount()
         {
+            await Task.Delay(3000);
             IsLoading = true;   
             Count = await _itemsProvider.FetchCount();
             IsLoading = false;
@@ -117,8 +136,14 @@ namespace TourismOfficeApplication.Virtualization
             set 
             {
                 _isLoading = value;
-                OnPropertyChanged(nameof(IsLoading));
+                OnLoadingChanged(IsLoading);
             } 
+        }
+        public event Action<bool>?  LoadingChanged;
+        public void OnLoadingChanged(bool val) 
+        {
+            OnPropertyChanged(nameof(IsLoading));
+            LoadingChanged?.Invoke(val);
         }
         #endregion
 
@@ -142,24 +167,26 @@ namespace TourismOfficeApplication.Virtualization
         #region RenderPages
         public async Task RenderPage(int pageIndex) 
         {
+
             if (!_pages.ContainsKey(pageIndex))
             {
-                _pages.Add(pageIndex,null);
+                _pages.Add(pageIndex, null);
                 _pagesTimeOut.Add(pageIndex, DateTime.Now);
-                IsLoading = true;
-                await LoadPage(pageIndex);
-                IsLoading = false;
-
-                Collection = _pages[pageIndex]!;
-                /*if(pageIndex != Count -1)                
-                    LoadPage(pageIndex + 1);
-                if(pageIndex != 0)
-                    LoadPage(pageIndex - 1);*/
             }
             else
             {
                 _pagesTimeOut[pageIndex] = DateTime.Now;
             }
+            IsLoading = true;
+            await LoadPage(pageIndex);
+            IsLoading = false;
+
+            Collection = _pages[pageIndex]!;
+            int qoutinet = Count % PageSize == 0 ? 0 : 1;
+            if (pageIndex != (Count / PageSize) + qoutinet - 1)
+                LoadPage(pageIndex + 1).ConfigureAwait(false);
+            if (pageIndex != 0)
+                LoadPage(pageIndex - 1).ConfigureAwait(false);
             CleanUpPages();
         }
         #endregion

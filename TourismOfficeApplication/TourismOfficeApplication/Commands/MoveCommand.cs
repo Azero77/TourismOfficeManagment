@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 using TourismOfficeApplication.Models;
 using TourismOfficeApplication.Virtualization;
@@ -13,9 +14,10 @@ namespace TourismOfficeApplication.Commands
     public class MoveCommand<T> : CommandBase
     {
         private readonly MoveState _state;
-        public MoveCommand(MoveState state)
+        public MoveCommand(MoveState state, Action<int> action)
         {
             _state = state;
+            Moved += action;
         }
         public override async void Execute(object? parameter)
         {
@@ -23,11 +25,13 @@ namespace TourismOfficeApplication.Commands
             VirtualizationCollection<T> collection = (VirtualizationCollection<T>) 
               args?[0]!;
             int pageIndex = (int) args?[1]!;
-
+            int newPage;
             if (_state is MoveState.MoveNext)
-                await collection.RenderPage(pageIndex + 1);
+                newPage = (pageIndex + 1);
             else
-                await collection.RenderPage(pageIndex - 1);
+                newPage = (pageIndex - 1);
+            await collection.RenderPage(newPage);
+            OnMoved(newPage);
         }
         public override bool CanExecute(object? parameter)
         {
@@ -40,6 +44,15 @@ namespace TourismOfficeApplication.Commands
                 return true;
             return false;
         }
+
+        //for CurrentPage Info
+        
+        public event Action<int> Moved;
+        public void OnMoved(int pageIndex)
+        {
+            Moved?.Invoke(pageIndex);
+        }
+
     }
 
 }

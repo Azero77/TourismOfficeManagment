@@ -24,16 +24,16 @@ namespace TourismOfficeApplication.Commands
             _dataAccess = dataAccess;
             _collection = collection;
         }
-        public override void Execute(object? parameter)
+        public override async void Execute(object? parameter)
         {
             object[]? values = (object[]?)parameter;
             string? SearchQuery = values?[0] as string;
             string? propertyName = values?[1] as string;
-            IEnumerable<Client> result;
             try
             {
+                int prev = _collection.Count;
                 IItemsProvider<Client> provider = new ItemProvider<Client>(_dataAccess,SearchQuery,propertyName);
-                _collection.ChangeProvider(provider);
+                await _collection.ChangeProvider(provider);
 
                 //will add some object to be transfered to get to know what the limit and offset of the user
                 /*result = await _dataAccess.GetClients(SearchQuery, 10,0,propertyName!);
@@ -41,6 +41,7 @@ namespace TourismOfficeApplication.Commands
                 {
                     _collection?.Add(client);
                 }*/
+                
                 _viewModel.StatusMessage = "عدد النتائج:" + (_collection?.Count.ToString() ?? "0");
             }
             catch (InvalidDataException)

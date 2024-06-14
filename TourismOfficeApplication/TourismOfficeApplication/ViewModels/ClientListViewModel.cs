@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -17,13 +20,59 @@ namespace TourismOfficeApplication.ViewModels
 {
     public class ClientListViewModel : ViewModelBase
     {
-        public int PageNumber { get; set; } = 0;
-        public int PagesCount { get; set; } = 10;
+        #region Paging
+        int _currentPage = 0;
+        public int CurrentPage {
+            get => _currentPage;
+            set 
+            {
+                _currentPage = value;
+                OnPropertyChanged(nameof(CurrentPage));
+            }
+        }
+        int _pagesCount;
+        public int PagesCount 
+        {
+            get => _pagesCount;
+            set
+            {
+                _pagesCount = value;
+                OnPropertyChanged(nameof(PagesCount));
+
+                MoveNextCommand.OnCanExecuteChanged();
+                MovePrevoiusCommand.OnCanExecuteChanged();
+            }
+        }
+        int _pageSize = 10;
+        public int PageSize
+        {
+            get => _pageSize;
+            set
+            {
+                _pageSize = value;
+                OnPropertyChanged(nameof(PageSize));
+            }
+        }
+
+        int _pageTimeout = 1000;
+        public int PageTimeOut 
+        {
+            get => _pageTimeout;
+            set 
+            {
+                _pageTimeout = value;
+                OnPropertyChanged(nameof(PageTimeOut));
+            }
+        }
+        public CommandBase MoveNextCommand { get; set; }
+        public CommandBase MovePrevoiusCommand { get; set; }
+
+
+        #endregion
         public ICommand SearchCommand { get; set; }
         public ICommand ShowDetailsCommand { get; set; }
         public ICommand EditClientCommand { get; set; }
-        public ICommand MoveNextCommand { get; set; }
-        public ICommand MovePrevoiusCommand { get; set; }
+        
         private VirtualizationCollection<Client> clients;
         public VirtualizationCollection<Client> Clients { 
             get => clients;
@@ -35,7 +84,7 @@ namespace TourismOfficeApplication.ViewModels
         }
 
         //For Checking The List is loaded to change the loading spinner
-        bool isLoading = false;
+        bool isLoading = true;
         public bool IsLoading
         {
             get => isLoading;
@@ -52,7 +101,9 @@ namespace TourismOfficeApplication.ViewModels
             /*dataAccess.GetClients().ContinueWith((t) => Clients = 
             new ObservableCollection<Client>(t.Result));*/
 
-            Clients = new(new ItemProvider<Client>(dataAccess), 10, 1000);
+            Clients = new(new ItemProvider<Client>(dataAccess), PageSize, PageTimeOut);
+            Clients.PropertyChanged += Clients_PropertyChanged;
+            Clients.LoadingChanged += OnLoadingChanged;
             EditClientCommand = new NavigationCommand<ClientViewModel>(
                 new NavigationService<ClientViewModel>(navigationStore,(client) => 
                 new((Client) client!, dataAccess,new NavigationService<ViewModelBase>(navigationStore,
@@ -64,14 +115,32 @@ namespace TourismOfficeApplication.ViewModels
                                                 .Select(p => p.Name);
             ErrorMessageViewModel = new();
             StatusMessageViewModel = new();
-            MoveNextCommand = new MoveCommand<Client>(MoveState.MoveNext);
-            MovePrevoiusCommand = new MoveCommand<Client>(MoveState.MovePrevoius);
+            MoveNextCommand = new MoveCommand<Client>(MoveState.MoveNext,CurrentPageChanged);
+            MovePrevoiusCommand = new MoveCommand<Client>(MoveState.MovePrevoius,CurrentPageChanged);
+            
             
         }
 
-        private void LoadClients(DataAccess dataAccess) 
+        private void Clients_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == "Count")
+            {
+                int qoutinet = Clients.Count % PageSize == 0 ? 0 : 1;
+                PagesCount = Clients.Count / PageSize + qoutinet;
+            }
         }
+
+        private void OnLoadingChanged(bool val)
+        {
+            IsLoading = val;
+        }
+        private void CurrentPageChanged(int newPageIndex) 
+        {
+            CurrentPage = newPageIndex;
+            MoveNextCommand.OnCanExecuteChanged();
+            MovePrevoiusCommand.OnCanExecuteChanged();
+        }
+        
 
         //method for updating collection when search is invoked
 

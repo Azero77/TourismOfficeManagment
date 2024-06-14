@@ -73,7 +73,7 @@ namespace TourismOfficeApplication.Models.DataAccess
             query =
                 "SELECT * FROM ("+
               $"SELECT TOP {limit} * FROM " +
-              $"(SELECT TOP {limit + offset} * FROM Clients {condition}) AS t1 " +
+              $"(SELECT TOP {limit + offset} * FROM Clients {condition} ORDER BY ID) AS t1 " +
               $"ORDER BY ID DESC) as t2 ORDER BY ID";
 
             var result = await RunQuery<Client>(query, param);
@@ -91,7 +91,7 @@ namespace TourismOfficeApplication.Models.DataAccess
             query += where;
             try
             {
-                var result = await RunQuery<int>(query,param);
+                var result = await RunQuery<int>(query,param,true);
                 return ((IEnumerable<int>)result).First();
             }
             catch (Exception)
@@ -107,7 +107,7 @@ namespace TourismOfficeApplication.Models.DataAccess
 
         //RunQuery To Return object of type T
         //if type is int then Execute method is invoked
-        public async Task<object> RunQuery<T>(string query, object? param)
+        public async Task<object> RunQuery<T>(string query, object? param, bool FetchCount = false)
         {
             OleDbConnection sqlConnection = GetConnection();
             object result = new();
@@ -116,12 +116,12 @@ namespace TourismOfficeApplication.Models.DataAccess
 
             try
             {
-                if (typeof(T) == typeof(int))
+                if (typeof(T) == typeof(int) && !FetchCount)
                 {
-                    result =  await sqlConnection.ExecuteAsync(query, param);
+                    result = await sqlConnection.ExecuteAsync(query, param);
                 }
                 else
-                   result =  await sqlConnection.QueryAsync<T>(query, param);
+                    result = await sqlConnection.QueryAsync<T>(query, param);
 
             }
             catch (Exception e)

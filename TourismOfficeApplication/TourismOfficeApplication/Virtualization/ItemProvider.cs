@@ -45,6 +45,10 @@ namespace TourismOfficeApplication.Virtualization
 
         public async Task<IList<T>> FetchRange(int start, int count)
         {
+            if (start + count > Count)
+            {
+                count = Count - start;
+            }
             IList<T> result = (List<T>) await _dataAccess.GetClients(_searchQuery,count,start,_propertyName ?? "FirstName");
             return result;
         }
