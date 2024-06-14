@@ -18,6 +18,7 @@ namespace TourismOfficeApplication.Stores
             get => _currentViewModel;
             set
             {
+                CurrentViewModel?.Dispose();
                 _currentViewModel = value;
                 OnModelChanged();
             }

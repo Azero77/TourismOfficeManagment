@@ -10,6 +10,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibiltyConverter"/>
+        <converters:AddNumberConverter x:Key="AddNumberConverter">
+        </converters:AddNumberConverter>
         <TextBlock x:Key="StateMessage"
                    DataContext="{Binding StatusMessageViewModel}"
                    Text="{Binding Message}"
@@ -90,6 +92,14 @@
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
+
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
+                    <Label>عدد العناصر</Label>
+                    <TextBox Text="{Binding PageSize}" MinWidth="25"></TextBox>
+                </StackPanel>
+
+            </StackPanel>
         </StackPanel>
         <Grid Grid.Row="1" Grid.ColumnSpan="2">
             <Grid.Style>
@@ -108,11 +118,14 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <DataGrid
+                Loaded="DataGridContainer_Loaded"
                 Grid.Row="0"
                 CanUserAddRows="False"
                 Grid.ColumnSpan="2"
                 ItemsSource="{Binding Clients}"
                 AutoGenerateColumns="False"
+                x:Name="DataGridContainer"
+
                 >
 
                 <DataGrid.Columns>
@@ -156,9 +169,10 @@
 
             </DataGrid>
             <DockPanel Grid.Row="1"
+                       LastChildFill="True"
                        >
                 <Button
-
+                    DockPanel.Dock="Left"
                     >
                     <Button.CommandParameter>
                         <MultiBinding>
@@ -179,7 +193,7 @@
                 </Button>
 
                 <Button
-
+                    DockPanel.Dock="Right"
                     >
                     <Button.CommandParameter>
                         <MultiBinding>
@@ -202,7 +216,7 @@
                 <Border BorderThickness="1" BorderBrush="Black">
                     <StackPanel>
                         <Label>CurrentPage:</Label>
-                        <TextBlock Text="{Binding CurrentPage}"/>
+                        <TextBlock Text="{Binding CurrentPage, Converter = {StaticResource AddNumberConverter},ConverterParameter = 1}"/>
                     </StackPanel>
                 </Border>
                 <TextBlock Text="{Binding PagesCount}"/>

@@ -9,6 +9,7 @@ namespace TourismOfficeApplication.Models
     public enum MoveState
     {
         MoveNext,
-        MovePrevoius
+        MovePrevoius,
+        Move,
     }
 }

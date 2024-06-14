@@ -15,5 +15,8 @@ namespace TourismOfficeApplication.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
+
+        public virtual void Dispose() 
+        { }
     }
 }

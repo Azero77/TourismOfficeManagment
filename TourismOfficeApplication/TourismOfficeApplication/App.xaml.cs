@@ -24,7 +24,7 @@ namespace TourismOfficeApplication
         
         string ConnectionString = 
                 "Provider=Microsoft.ACE.OLEDB.12.0;" +
-                @"Data Source= Database\Mock.accdb;" +
+                @"Data Source= Database\TourismOfficeDatabase.accdb;" +
                 "Persist Security Info=False;";
         IServiceProvider serviceProvider;
         public App()

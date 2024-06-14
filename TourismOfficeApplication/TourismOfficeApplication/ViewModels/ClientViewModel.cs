@@ -127,6 +127,11 @@ namespace TourismOfficeApplication.ViewModels
             OnPropertyChanged(nameof(CanConfirm));
         }
         public bool CanConfirm => !HasErrors;
+        public override void Dispose()
+        {
+            ErrorsChanged -= ClientViewModel_ErrorsChanged;
+            base.Dispose();
+        }
         ~ClientViewModel()
         {
 

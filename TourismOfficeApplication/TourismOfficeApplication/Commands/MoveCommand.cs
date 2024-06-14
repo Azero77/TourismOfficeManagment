@@ -28,8 +28,10 @@ namespace TourismOfficeApplication.Commands
             int newPage;
             if (_state is MoveState.MoveNext)
                 newPage = (pageIndex + 1);
-            else
+            else if (_state is MoveState.MovePrevoius)
                 newPage = (pageIndex - 1);
+            else
+                newPage = pageIndex;
             await collection.RenderPage(newPage);
             OnMoved(newPage);
         }

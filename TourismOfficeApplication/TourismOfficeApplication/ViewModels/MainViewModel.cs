@@ -27,5 +27,6 @@ namespace TourismOfficeApplication.ViewModels
         {
             OnPropertyChanged(nameof(CurrentViewModel));
         }
+        
     }
 }

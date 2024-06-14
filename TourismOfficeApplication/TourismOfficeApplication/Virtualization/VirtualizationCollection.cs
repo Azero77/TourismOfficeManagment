@@ -88,7 +88,12 @@ namespace TourismOfficeApplication.Virtualization
         #region Properties
         #region PageSize
         int _pageSize = 20;
-        public int PageSize { get => _pageSize; set => _pageSize = value; }
+        public int PageSize { get => _pageSize; set
+            {
+                _pageSize = value;
+                Initialize().ConfigureAwait(false);
+            }
+        }
         #endregion
         #region PageTimeOut
         int _pageTimeOut = 1000;
@@ -187,7 +192,14 @@ namespace TourismOfficeApplication.Virtualization
                 LoadPage(pageIndex + 1).ConfigureAwait(false);
             if (pageIndex != 0)
                 LoadPage(pageIndex - 1).ConfigureAwait(false);
+            OnPageRendered(pageIndex,Count,PageSize);
             CleanUpPages();
+        }
+        //Action is pageIndex and Count of items and pageSIze to navigate Between them
+        public event Action<int,int,int> PageRendered;
+        public void OnPageRendered(int pageIndex,int countItems,int pageSize)
+        {
+            PageRendered?.Invoke(pageIndex,countItems,pageSize);
         }
         #endregion
         #region LoadingCertainPage

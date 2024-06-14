@@ -51,6 +51,7 @@ namespace TourismOfficeApplication.ViewModels
             {
                 _pageSize = value;
                 OnPropertyChanged(nameof(PageSize));
+                Clients.PageSize = PageSize;
             }
         }
 
@@ -66,6 +67,27 @@ namespace TourismOfficeApplication.ViewModels
         }
         public CommandBase MoveNextCommand { get; set; }
         public CommandBase MovePrevoiusCommand { get; set; }
+        public CommandBase MoveCommand { get; set; }
+        private void Clients_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Count")
+            {
+                int qoutinet = Clients.Count % PageSize == 0 ? 0 : 1;
+                PagesCount = Clients.Count / PageSize + qoutinet;
+                CurrentPage = 0;
+            }
+        }
+
+        private void OnLoadingChanged(bool val)
+        {
+            IsLoading = val;
+        }
+        private void CurrentPageChanged(int newPageIndex)
+        {
+            CurrentPage = newPageIndex;
+            MoveNextCommand.OnCanExecuteChanged();
+            MovePrevoiusCommand.OnCanExecuteChanged();
+        }
 
 
         #endregion
@@ -121,25 +143,6 @@ namespace TourismOfficeApplication.ViewModels
             
         }
 
-        private void Clients_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Count")
-            {
-                int qoutinet = Clients.Count % PageSize == 0 ? 0 : 1;
-                PagesCount = Clients.Count / PageSize + qoutinet;
-            }
-        }
-
-        private void OnLoadingChanged(bool val)
-        {
-            IsLoading = val;
-        }
-        private void CurrentPageChanged(int newPageIndex) 
-        {
-            CurrentPage = newPageIndex;
-            MoveNextCommand.OnCanExecuteChanged();
-            MovePrevoiusCommand.OnCanExecuteChanged();
-        }
         
 
         //method for updating collection when search is invoked
@@ -166,6 +169,16 @@ namespace TourismOfficeApplication.ViewModels
                 StatusMessageViewModel.Message = value;
                 ErrorMessageViewModel.Message = string.Empty;
             }
+        }
+        public override void Dispose()
+        {
+            Clients.PropertyChanged -= Clients_PropertyChanged;
+            Clients.LoadingChanged -= OnLoadingChanged;
+            base.Dispose();
+        }
+        ~ClientListViewModel()
+        {
+
         }
     }
 }
