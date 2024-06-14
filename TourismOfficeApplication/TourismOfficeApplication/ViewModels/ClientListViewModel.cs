@@ -16,14 +16,15 @@ namespace TourismOfficeApplication.ViewModels
 {
     public class ClientListViewModel : ViewModelBase
     {
-        
+
         public ICommand SearchCommand { get; set; }
         public ICommand ShowDetailsCommand { get; set; }
         public ICommand EditClientCommand { get; set; }
         private ObservableCollection<Client> clients = new();
-        public ObservableCollection<Client> Clients { 
+        public ObservableCollection<Client> Clients
+        {
             get => clients;
-            set 
+            set
             {
                 clients = value;
                 OnPropertyChanged(nameof(Clients));
@@ -35,7 +36,7 @@ namespace TourismOfficeApplication.ViewModels
         public bool IsLoading
         {
             get => isLoading;
-            set 
+            set
             {
                 isLoading = value;
                 OnPropertyChanged(nameof(IsLoading));
@@ -49,11 +50,11 @@ namespace TourismOfficeApplication.ViewModels
             new ObservableCollection<Client>(t.Result));*/
             LoadClients(dataAccess).ContinueWith(r => IsLoading = false);
             EditClientCommand = new NavigationCommand<ClientViewModel>(
-                new NavigationService<ClientViewModel>(navigationStore,(client) => 
-                new((Client) client!, dataAccess,new NavigationService<ViewModelBase>(navigationStore,
-                (tmp)=> new ClientListViewModel(dataAccess,navigationStore)), EditCategory.Update)));
+                new NavigationService<ClientViewModel>(navigationStore, (client) =>
+                new((Client)client!, dataAccess, new NavigationService<ViewModelBase>(navigationStore,
+                (tmp) => new ClientListViewModel(dataAccess, navigationStore)), EditCategory.Update)));
             ShowDetailsCommand = new ShowDetailsCommand();
-            SearchCommand = new SearchCommand(this,dataAccess, Clients);
+            SearchCommand = new SearchCommand(this, dataAccess, Clients);
 
             GetPropertiesNames = typeof(Client).GetProperties()
                                                 .Select(p => p.Name);
@@ -61,10 +62,10 @@ namespace TourismOfficeApplication.ViewModels
             StatusMessageViewModel = new();
         }
 
-        private async Task LoadClients(DataAccess dataAccess) 
+        private async Task LoadClients(DataAccess dataAccess)
         {
             //Make a variable called pageSize and PageModel and bind it to VirtualizationCollection
-            var clients = await dataAccess.GetClients(null,10,0);
+            var clients = await dataAccess.GetClients(10, 0);
             UpdateClients(clients);
         }
 
@@ -84,7 +85,7 @@ namespace TourismOfficeApplication.ViewModels
         //Message Indicators Failing or Success
         public MessageViewModel ErrorMessageViewModel { get; set; }
         public string ErrorMessage
-        { 
+        {
             set
             {
                 ErrorMessageViewModel.Message = value;
@@ -93,7 +94,7 @@ namespace TourismOfficeApplication.ViewModels
         }
         public MessageViewModel StatusMessageViewModel { get; set; }
         //Added setter only property to facilite and encapsulate reaching ViewModels
-        public string StatusMessage 
+        public string StatusMessage
         {
             set
             {

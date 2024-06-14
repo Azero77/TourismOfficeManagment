@@ -56,13 +56,6 @@ namespace TourismOfficeApplication.Models.DataAccess
             
             return (IEnumerable<Client>)result;
         }
-        /*public async Task<IEnumerable<Client>> GetClients(string? searchQuery) 
-        {
-            string query = "SELECT * FROM Clients WHERE FirstName LIKE @name";
-            object param = new { name =  searchQuery + "%"};
-            var result = await RunQuery<Client>(query, param);
-            return (IEnumerable<Client>) result;
-        }*/
         public async Task<IEnumerable<Client>> GetClients(
             string? searchQuery,
             int limit,
@@ -78,9 +71,11 @@ namespace TourismOfficeApplication.Models.DataAccess
                 
             
             query =
+                "SELECT * FROM ("+
               $"SELECT TOP {limit} * FROM " +
-              $"(SELECT * FROM (SELECT TOP {limit + offset} * FROM Clients {condition}) as t1 " +
-              $"ORDER BY ID DESC) ORDER BY ID";
+              $"(SELECT TOP {limit + offset} * FROM Clients {condition}) AS t1 " +
+              $"ORDER BY ID DESC) as t2 ORDER BY ID";
+
             var result = await RunQuery<Client>(query, param);
             return (IEnumerable<Client>)result;
         }

@@ -7,9 +7,9 @@ using TourismOfficeApplication.Models.DataAccess;
 
 namespace TourismOfficeApplication.Virtualization
 {
-    public class ClientsProvider<T> : IItemsProvider<T>
+    public class ItemProvider<T> : IItemsProvider<T>
     {
-        public ClientsProvider(DataAccess dataAccess)
+        public ItemProvider(DataAccess dataAccess)
         {
             _dataAccess = dataAccess;
         }
@@ -36,7 +36,7 @@ namespace TourismOfficeApplication.Virtualization
 
         public async Task<IList<T>> FetchRange(int start, int count)
         {
-            IList<T> result = (List<T>) await _dataAccess.GetClients(null, start, start + count);
+            IList<T> result = (List<T>) await _dataAccess.GetClients(null,count,start);
             return result;
         }
     }
